@@ -42,7 +42,7 @@ beforeEach(() => {
 });
 
 describe("GET /api", () => {
-    test("get status code 200 and correct keys in enpoints array and the correct length", () => {
+    test("get status code 200 and the json we recieve from link is same as endpoints.json file", () => {
         return request(app)
         .get("/api")
         .expect(200)
