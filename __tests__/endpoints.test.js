@@ -52,3 +52,42 @@ describe("GET /api", () => {
         })
     })
 })
+
+describe("GET /api/articles/:article_id", () => {
+    test("200: and an article object with the correct properties", () => {
+        return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({body}) => {
+        
+            const article = body
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String) 
+            })     
+            });
+        })
+    test("404: Not Found when article number doesn't exist", () => {
+        return request(app)
+        .get("/api/articles/32")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Not Found")
+        })
+    })
+    test("400: Bad request when given invalid article ID", () => {
+        return request(app)
+        .get("/api/articles/banana")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request")
+        })
+    })
+})
+
