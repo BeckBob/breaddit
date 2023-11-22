@@ -128,3 +128,62 @@ describe("/api/articles", () => {
     })
     
 })
+
+describe("/api/articles/:article_id/comments", () => {
+    test("200: returns with and array of comments with correct keys for article with specific ID", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments
+            const size = Object.keys(comments).length;
+            expect(size).toBe(11)
+            comments.forEach((comment) => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    article_id: expect.any(Number),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    author: expect.any(String),
+                })
+            })
+        })
+    })
+    test("articles appear in descending order", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            const comments = body.comments
+            expect(comments).toBeSortedBy('comment_id', {
+                descending: true,
+              });
+        })
+    })
+    test("404: check error message is correct when article number doesn't exist", () =>{
+        return request(app)
+        .get("/api/articles/33/comments ")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Not Found")
+        });
+    });
+    test("400: Bad request when given invalid article ID", () => {
+        return request(app)
+        .get("/api/articles/banana/comments")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request")
+        });
+    });
+    test("200: when requesting comments on article with no comments return empty array", () => {
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.comments).toEqual([])
+        })
+    })
+
+})

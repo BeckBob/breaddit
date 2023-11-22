@@ -1,4 +1,4 @@
-const { getArticle, checkArticleExists, getAllArticlesObj } = require("../models/articles.model")
+const { getArticle, checkArticleExists, getAllArticlesObj, getCommentsForArticle } = require("../models/articles.model")
 
 exports.getAllArticles = (req, res, next) => {
     getAllArticlesObj().then((body) => {
@@ -15,3 +15,14 @@ exports.getArticleById = (req, res, next) => {
         res.status(200).send(article);
         }).catch(next);
     };
+
+exports.getComments = (req, res, next) => {
+    const {article_id} = req.params
+    const commentsPromises = [checkArticleExists(article_id), getCommentsForArticle(article_id)]
+
+    Promise.all(commentsPromises).then((resolvedPromises) => {
+        const comments = resolvedPromises[1]
+        res.status(200).send({comments});
+    }).catch(next)
+    
+}
