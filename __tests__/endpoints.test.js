@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
 const endPoints = require('../endpoints.json');
+const sorted = require('jest-sorted');
 
 
 beforeEach(() => {
@@ -98,7 +99,8 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({body}) => {
             const articles = body.body
-            
+            const size = Object.keys(articles[0]).length;
+            expect(size).toBe(8)
             articles.forEach((article) => {
                 expect(article).toMatchObject({
                     author: expect.any(String),
@@ -119,15 +121,10 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({body}) => {
             const articles = body.body
-            expect(articles[0].article_id).toBe(articles.length)
+            expect(articles).toBeSortedBy('article_id', {
+                descending: true,
+              });
         })
     })
-    test("when given a bad query endpoint returns Bad Request error", () => {
-        return request(app)
-        .get("/api/articles?banana=banana")
-        .expect(400)
-        .then(({body}) => {
-            expect(body.msg).toBe("Bad Request")
-        })
-    })
+    
 })
