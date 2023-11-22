@@ -177,12 +177,12 @@ describe("/api/articles/:article_id/comments", () => {
             expect(body.msg).toBe("Bad Request")
         });
     });
-    test("404: Not Found, when requesting comments on article with no comments", () => {
+    test("200: when requesting comments on article with no comments return empty array", () => {
         return request(app)
         .get("/api/articles/2/comments")
-        .expect(404)
+        .expect(200)
         .then(({body}) => {
-            expect(body.msg).toBe("No Comments For This Article")
+            expect(body.comments).toEqual([])
         })
     })
 
