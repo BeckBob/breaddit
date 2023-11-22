@@ -4,6 +4,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
 const endPoints = require('../endpoints.json');
+const sorted = require('jest-sorted');
 
 
 beforeEach(() => {
@@ -91,3 +92,39 @@ describe("GET /api/articles/:article_id", () => {
     })
 })
 
+describe("/api/articles", () => {
+    test("200: returns object with all the articles", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            const articles = body.body
+            const size = Object.keys(articles[0]).length;
+            expect(size).toBe(8)
+            articles.forEach((article) => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                })
+            })
+        })
+    })
+    test("articles appear in descending order", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+            const articles = body.body
+            expect(articles).toBeSortedBy('article_id', {
+                descending: true,
+              });
+        })
+    })
+    
+})
