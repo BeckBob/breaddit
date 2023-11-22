@@ -135,9 +135,9 @@ describe("/api/articles/:article_id/comments", () => {
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({body}) => {
-            const comments = body[0]
-            const size = Object.keys(comments[0]).length;
-            expect(size).toBe(6)
+            const comments = body.comments
+            const size = Object.keys(comments).length;
+            expect(size).toBe(11)
             comments.forEach((comment) => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -155,7 +155,7 @@ describe("/api/articles/:article_id/comments", () => {
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({body}) => {
-            const comments = body[0]
+            const comments = body.comments
             expect(comments).toBeSortedBy('comment_id', {
                 descending: true,
               });
@@ -175,6 +175,15 @@ describe("/api/articles/:article_id/comments", () => {
         .expect(400)
         .then(({body}) => {
             expect(body.msg).toBe("Bad Request")
+        });
+    });
+    test("404: Not Found, when requesting comments on article with no comments", () => {
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("No Comments For This Article")
         })
     })
+
 })

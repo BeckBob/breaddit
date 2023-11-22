@@ -18,10 +18,11 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getComments = (req, res, next) => {
     const {article_id} = req.params
-    const commentsPromises = [getCommentsForArticle(article_id), checkArticleExists(article_id)]
+    const commentsPromises = [checkArticleExists(article_id), getCommentsForArticle(article_id)]
 
     Promise.all(commentsPromises).then((resolvedPromises) => {
-        res.status(200).send(resolvedPromises);
+        const comments = resolvedPromises[1]
+        res.status(200).send({comments});
     }).catch(next)
     
 }

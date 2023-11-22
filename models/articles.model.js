@@ -41,6 +41,10 @@ exports.checkArticleExists = (article_id) => {
 exports.getCommentsForArticle = (article_id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY comment_id DESC`, [article_id])
     .then(( {rows }) => {
+        if(!rows.length) {
+            return Promise.reject({status: 404, msg: "No Comments For This Article"})
+        }
+        else
         {return rows}
     }
 )}
