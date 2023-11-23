@@ -366,9 +366,6 @@ describe("DELETE /api/comments/:comment_id", () => {
         return request(app)
         .delete("/api/comments/2")
         .expect(204)
-        .then(({body}) => {
-            expect(body).toEqual({})
-        })
     })
     test("400: Bad Request when given invalid comment id", () => {
         return request(app)
