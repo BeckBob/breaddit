@@ -45,3 +45,14 @@ exports.getCommentsForArticle = (article_id) => {
         {return rows}
     }
     )}
+
+exports.postCommentInArticle = (article_id, body) => {
+    const inputArr = [body.body, article_id, body.username, 0]
+     
+    return db.query(
+        `INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, $4) RETURNING *;`,
+        inputArr
+      ).then(( result ) => {
+        return result.rows[0]
+      });
+}
