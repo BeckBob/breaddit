@@ -229,4 +229,37 @@ describe("POST /api/articles/:article_id/comments", () => {
             expect(body.msg).toBe("User Doesn't Exist");
         });
     });
+    test("400: Bad Request when given invalid article id", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment"}
+        return request(app)
+        .post("/api/articles/banana/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Bad Request when request body is incomplete", () => {
+        const newComment = {username: 'rogersop'}
+        return request(app)
+        .post("/api/articles/6/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Bad Request when request body has too many properties", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment",
+                            extra: "extra stuff"}
+        return request(app)
+        .post("/api/articles/6/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
 });
