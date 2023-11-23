@@ -40,8 +40,24 @@ exports.checkArticleExists = (article_id) => {
 
 exports.getCommentsForArticle = (article_id) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY comment_id DESC`, [article_id])
-    .then(( {rows }) => {
+    .then(( { rows }) => {
         
         {return rows}
     }
     )}
+
+exports.postCommentInArticle = (article_id, body) => {
+    const inputArr = [body.body, article_id, body.username, 0]
+    const length = Object.keys(body).length;
+    if(!body.body || !body.username || length> 2){
+        return Promise.reject({status: 400, msg: "Bad Request"})
+    }
+    else
+    return db.query(
+        `INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, $4) RETURNING *;`,
+        inputArr
+      ).then(( result ) => {
+        
+        return result.rows[0]
+      });
+}

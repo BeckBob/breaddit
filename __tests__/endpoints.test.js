@@ -159,8 +159,8 @@ describe("/api/articles/:article_id/comments", () => {
             expect(comments).toBeSortedBy('comment_id', {
                 descending: true,
               });
-        })
-    })
+        });
+    });
     test("404: check error message is correct when article number doesn't exist", () =>{
         return request(app)
         .get("/api/articles/33/comments ")
@@ -183,7 +183,83 @@ describe("/api/articles/:article_id/comments", () => {
         .expect(200)
         .then(({body}) => {
             expect(body.comments).toEqual([])
-        })
-    })
+        });
+    });
 
-})
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+    test("201: when posting comment it responds with the posted comment", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment"}
+        return request(app)
+        .post("/api/articles/2/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.comment).toEqual({
+                comment_id: 19,
+                article_id: 2,
+                body: "this is a comment",
+                created_at: expect.any(String),
+                votes: 0,
+                author: "rogersop",
+            });
+        });
+    });
+    test("404: when posting comment on an article that doesnt exist", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment"}
+        return request(app)
+        .post("/api/articles/34/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Not Found");
+        });
+    });
+    test("404: error when posting comment from user that doesn't exist", () => {
+        const newComment = {username: 'beckbeck',
+                            body: "this is a comment"}
+        return request(app)
+        .post("/api/articles/2/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("User Doesn't Exist");
+        });
+    });
+    test("400: Bad Request when given invalid article id", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment"}
+        return request(app)
+        .post("/api/articles/banana/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Bad Request when request body is incomplete", () => {
+        const newComment = {username: 'rogersop'}
+        return request(app)
+        .post("/api/articles/6/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
+    test("400: Bad Request when request body has too many properties", () => {
+        const newComment = {username: 'rogersop',
+                            body: "this is a comment",
+                            extra: "extra stuff"}
+        return request(app)
+        .post("/api/articles/6/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request");
+        });
+    });
+});
