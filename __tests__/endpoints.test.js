@@ -328,11 +328,31 @@ describe("PATCH /api/articles/:article_id", () => {
             expect(body.msg).toBe("Bad Request");
         });
     });
-        test("400: Bad request when too many keys in request", () => {
+        test("200: returns updated article having ignored the extra keys", () => {
         const update = {inc_votes: 3,
                         notAkey: 5}
         return request(app)
-        .patch("/api/articles/2")
+        .patch("/api/articles/1")
+        .send(update)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.article).toEqual({
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: "2020-07-09T20:11:00.000Z",
+                votes: 103,
+                article_id: 1,
+                article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              })
+        })
+    });
+    test("400: Bad request when given invalid article id", () => {
+        const update = {inc_votes: 3}
+        return request(app)
+        .patch("/api/articles/banana")
         .send(update)
         .expect(400)
         .then(({body}) => {
