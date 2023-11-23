@@ -63,10 +63,10 @@ exports.postCommentInArticle = (article_id, body) => {
 }
 
 
-exports.updateVotes = (article_id, inc_votes, body) => {
-    const length = Object.keys(body).length;
+exports.updateVotes = (article_id, inc_votes) => {
 
-    if(!inc_votes || length > 1){
+
+    if(!inc_votes){
         return Promise.reject({status: 400, msg: "Bad Request"})
     }
     else

@@ -43,8 +43,8 @@ exports.postComment = (req, res, next) => {
 exports.updateArticle = (req, res, next) => {
     const {inc_votes} = req.body
     const {article_id} = req.params
-    const body = req.body
-    const updateArticlePromises = [checkArticleExists(article_id),updateVotes(article_id, inc_votes, body)]
+    
+    const updateArticlePromises = [checkArticleExists(article_id),updateVotes(article_id, inc_votes)]
 
     Promise.all(updateArticlePromises).then((resolvedPromises) => {
     const article = resolvedPromises[1]
