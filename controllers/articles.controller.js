@@ -1,4 +1,4 @@
-const { getArticle, checkArticleExists, getAllArticlesObj, getCommentsForArticle, postComments, postCommentInArticle } = require("../models/articles.model");
+const { getArticle, checkArticleExists, getAllArticlesObj, getCommentsForArticle, postComments, postCommentInArticle, updateVotes } = require("../models/articles.model");
 const { checkUserExists } = require("../models/users.model");
 
 exports.getAllArticles = (req, res, next) => {
@@ -39,3 +39,15 @@ exports.postComment = (req, res, next) => {
     res.status(201).send({ comment })
     }).catch(next);
 };
+
+exports.updateArticle = (req, res, next) => {
+    const {inc_votes} = req.body
+    const {article_id} = req.params
+    const body = req.body
+    const updateArticlePromises = [checkArticleExists(article_id),updateVotes(article_id, inc_votes, body)]
+
+    Promise.all(updateArticlePromises).then((resolvedPromises) => {
+    const article = resolvedPromises[1]
+    res.status(201).send({ article })
+    }).catch(next)
+}
