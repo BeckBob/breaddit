@@ -1,8 +1,14 @@
 const { getArticle, checkArticleExists, getAllArticlesObj, getCommentsForArticle, postComments, postCommentInArticle, updateVotes, deleteCommenUsingId, checkCommentExists } = require("../models/articles.model");
+const { checkTopicExists } = require("../models/topics.model");
 const { checkUserExists } = require("../models/users.model");
 
 exports.getAllArticles = (req, res, next) => {
-    getAllArticlesObj().then((body) => {
+    const query = req.query
+    const getArticlesPromises = [getAllArticlesObj(query)]
+    if(query.topic) { getArticlesPromises.push(checkTopicExists(query))}
+    
+    Promise.all(getArticlesPromises).then((resolvedPromises) => {
+    const body = resolvedPromises[0]
     res.status(200).send({body})
 }).catch(next)
 }

@@ -403,3 +403,43 @@ describe("GET /api/users", () => {
 });
 });
 })
+
+describe("GET /api/articles (topic query)", () => {
+    test("returns with articles filtered by topic in query", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body}) => {
+            const articles = body.body;
+            expect(articles).toHaveLength(12)
+            articles.forEach((article) => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: "mitch",
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                })
+            })
+        })
+    })
+    test("400: Bad Request when query isn't topic i.e. /api/articles?banana=mitch", () =>{
+        return request(app)
+        .get("/api/articles?banana=cats")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad Request")
+        })
+    })
+    test("404: Not Found when topic doesn't exist i.e. /api/articles?topic=sharon", () =>{
+        return request(app)
+        .get("/api/articles?topic=sharon")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Not Found")
+        })
+    })
+})
