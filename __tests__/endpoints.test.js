@@ -458,8 +458,8 @@ describe("GET /api/articles/:article_id ADD COMMENT_COUNT", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({body}) => {
-            console.log(body)
             const article = body
+            expect(article.comment_count).toBe(11)
             expect(article).toMatchObject({
                 author: expect.any(String),
                 title: expect.any(String),
