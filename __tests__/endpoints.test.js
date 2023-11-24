@@ -496,3 +496,10 @@ describe("GET /api/articles/:article_id ADD COMMENT_COUNT", () => {
     })
     
 })
+
+
+describe("GET /api/articles (sorting queries)", () => {
+    test("200: returns articles sorted by a valid column", () => {
+        
+    })
+})
