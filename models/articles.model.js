@@ -1,9 +1,29 @@
 const db = require("../db/connection");
 
 exports.getArticle = (article_id) => {
+// let queryStr = `SELECT *, `
 
-return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
-.then(( {rows} ) => { return rows[0]});
+// db.query(`SELECT * FROM comments WHERE article_id = $1`).then(({rows}) => {
+//     if(!rows.length){queryStr += }
+// })
+
+return db.query(`SELECT articles.author,
+articles.title, 
+articles.article_id,
+articles.topic,
+articles.created_at,
+articles.votes,
+articles.article_img_url,
+articles.body,
+CAST(COUNT(comments.article_id = $1) AS integer) AS comment_count 
+FROM articles
+LEFT JOIN comments
+ON comments.article_id = articles.article_id WHERE articles.article_id = $1 
+GROUP BY articles.article_id,
+comments.article_id;`, [article_id])
+.then(( {rows} ) => {
+    console.log(rows)
+    return rows[0]});
     
 }
 
@@ -118,3 +138,7 @@ exports.checkCommentExists = (comment_id) => {
     )
 
 }
+
+// exports.checkArticleHasComments = (article_id) => {
+//     return
+// }
