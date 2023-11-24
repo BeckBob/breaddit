@@ -17,7 +17,7 @@ beforeEach(() => {
   
   
   describe("api/topics", () => {
-      test("status check responds 200 amd their are the sorrect keys in topics array and correct length", () => {
+      test("status check responds 200 amd their are the correct keys in topics array and correct length", () => {
         return request(app)
         .get("/api/topics")
         .expect(200)
@@ -383,4 +383,23 @@ describe("DELETE /api/comments/:comment_id", () => {
             expect(body.msg).toEqual("Not Found")
         })
     })
+})
+
+describe("GET /api/users", () => {
+    test("status check responds 200 and responds with object with correct keys and length", () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+    .then(({body}) => {
+            const users = body.users
+             expect(users).toHaveLength(4);
+             users.forEach((user) => {
+                 expect(user).toMatchObject({
+                     username: expect.any(String),
+                     name: expect.any(String),
+                     avatar_url: expect.any(String),
+                 });
+    });
+});
+});
 })

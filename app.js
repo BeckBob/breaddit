@@ -4,6 +4,7 @@ const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./
 const { notFound } = require("./controllers/errors.controller");
 const { getEndpoints } = require("./controllers/endpoints.controller");
 const { getArticleById, getAllArticles, getComments, postComment, updateArticle, deleteComments } = require("./controllers/articles.controller");
+const { getAllUsers } = require("./controllers/users.controller");
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,7 @@ app.patch("/api/articles/:article_id", updateArticle);
 
 app.delete("/api/comments/:comment_id", deleteComments)
 
+app.get("/api/users", getAllUsers);
 
 app.all("*", notFound);
 
