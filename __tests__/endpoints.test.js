@@ -442,4 +442,12 @@ describe("GET /api/articles (topic query)", () => {
             expect(body.msg).toBe("Not Found")
         })
     })
+    test("200: empty array for when topic exists but there are no articles linked to it", () =>{
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({body}) => {
+            expect(body.body).toEqual([])
+        })
+    })
 })
