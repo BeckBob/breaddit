@@ -57,7 +57,7 @@ describe("GET /api", () => {
 describe("GET /api/articles/:article_id", () => {
     test("200: and an article object with the correct properties", () => {
         return request(app)
-        .get("/api/articles/2")
+        .get("/api/articles/3")
         .expect(200)
         .then(({body}) => {
         
@@ -450,4 +450,49 @@ describe("GET /api/articles (topic query)", () => {
             expect(body.body).toEqual([])
         })
     })
+})
+
+describe("GET /api/articles/:article_id ADD COMMENT_COUNT", () => {
+    test("200: returns with article including comment_count", () => {
+        return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({body}) => {
+            const article = body
+            expect(article.comment_count).toBe(11)
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                comment_count: expect.any(Number),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String), 
+            })     
+            });
+       
+        
+    })
+    test("200: when article has no comments returns with article including comment_count at 0", () => {
+        return request(app)
+        .get("/api/articles/8")
+        .expect(200)
+        .then(({body}) => {
+            const article = body
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                body: expect.any(String),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                comment_count: 0,
+                votes: expect.any(Number),
+                article_img_url: expect.any(String), 
+            })     
+            });
+    })
+    
 })
