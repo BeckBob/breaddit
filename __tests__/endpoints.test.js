@@ -498,8 +498,16 @@ describe("GET /api/articles/:article_id ADD COMMENT_COUNT", () => {
 })
 
 
-describe("GET /api/articles (sorting queries)", () => {
-    test("200: returns articles sorted by a valid column", () => {
-        
-    })
-})
+// describe("GET /api/articles (sorting queries)", () => {
+//     test("200: returns articles sorted by a valid column", () => {
+//         return request(app)
+//         .get("/api/articles?sort_by=author")
+//         .expect(200)
+//         .then(({body}) => {
+//             const articles = body.body
+//             expect(articles).toBeSortedBy('author', {
+//                 ascending: true,
+//               });
+//         });
+//     })
+// })

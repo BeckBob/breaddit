@@ -5,8 +5,12 @@ const { notFound } = require("./controllers/errors.controller");
 const { getEndpoints } = require("./controllers/endpoints.controller");
 const { getArticleById, getAllArticles, getComments, postComment, updateArticle, deleteComments } = require("./controllers/articles.controller");
 const { getAllUsers } = require("./controllers/users.controller");
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/topics", getAllTopics);

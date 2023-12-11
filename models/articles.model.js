@@ -35,6 +35,7 @@ ON comments.article_id = articles.article_id `
 let queryValues = []
 
 const {topic} = query;
+const {sort_by} = query;
 const size = Object.keys(query).length;
 
 
@@ -43,8 +44,11 @@ if(topic){  queryValues.push(topic)
 
 queryStr += `GROUP BY 
 articles.article_id,
-comments.article_id
-ORDER BY articles.article_id DESC; `
+comments.article_id `
+
+if(sort_by){queryValues.push(sort_by)
+    queryStr += `ORDER BY $1 ASC;`}
+else {queryStr += `ORDER BY articles.article_id DESC; `}
 
 return db.query(queryStr, queryValues)
     .then(({ rows }) => {
@@ -59,6 +63,7 @@ return db.query(queryStr, queryValues)
         status: 400, 
         msg: "Bad Request"});
     }
+        console.log(rows)
       return rows 
     });
 };
